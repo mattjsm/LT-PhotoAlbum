@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using PhotoAlbum.Infrastructure;
+using PhotoAlbum.Integration;
 using PhotoAlbum.Model;
 
 namespace PhotoAlbum
@@ -11,17 +11,19 @@ namespace PhotoAlbum
     public class AlbumController : IDisposable
     {
         private readonly IAlbumProvider albumProvider;
+        private readonly IConsoleWriter consoleWriter;
 
         private bool disposed;
 
-        public AlbumController(IAlbumProvider prov)
+        public AlbumController(IAlbumProvider prov, IConsoleWriter writer)
         {
             this.albumProvider = prov;
+            this.consoleWriter = writer;
         }
 
         public void ShowAlbums(IEnumerable<uint> albumNums)
         {
-            Console.WriteLine("Retrieving album(s)...");
+            this.consoleWriter.WriteLine("Retrieving album(s)...");
 
             var albumTask = this.albumProvider.GetAlbums(albumNums.Distinct());
             albumTask.Wait();
@@ -29,7 +31,7 @@ namespace PhotoAlbum
             var albums = albumTask.Result;
             if (albums == null)
             {
-                Console.WriteLine("An error occurred while retrieving photo album data.");
+                this.consoleWriter.WriteLine("An error occurred while retrieving photo album data.");
                 return;
             }
 
@@ -57,7 +59,7 @@ namespace PhotoAlbum
                     }
                 }
 
-                Console.WriteLine(sb.ToString());
+                this.consoleWriter.WriteLine(sb.ToString());
             }
         }
 

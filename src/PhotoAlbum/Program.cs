@@ -51,6 +51,7 @@ namespace PhotoAlbum
             var builder = new ContainerBuilder();
             builder.RegisterType<HttpClient>().As<IHttpClient>();
             builder.RegisterType<AlbumProvider>().As<IAlbumProvider>();
+            builder.RegisterType<ConsoleWriter>().As<IConsoleWriter>();
             builder.RegisterType<AlbumController>().AsSelf();
             return builder.Build();
         }
