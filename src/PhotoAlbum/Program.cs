@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Autofac;
 using PhotoAlbum.Infrastructure;
+using PhotoAlbum.Integration;
 
 namespace PhotoAlbum
 {
@@ -11,7 +12,7 @@ namespace PhotoAlbum
         {
             if (args == null || args.Length != 1)
             {
-                Console.WriteLine("Invalid number of args; Comma separated Album numbers");
+                Console.WriteLine("Invalid number of args; Provide comma separated Album numbers");
                 return;
             }
 
@@ -46,7 +47,7 @@ namespace PhotoAlbum
         private static IContainer SetupDI()
         {
             // There are ways to automate this using conventions, attributes, etc. Seemed like overkill for this.
-            // Leveraging it for sake of testing
+            // Leveraging it for the sake of testing
             var builder = new ContainerBuilder();
             builder.RegisterType<HttpClient>().As<IHttpClient>();
             builder.RegisterType<AlbumProvider>().As<IAlbumProvider>();

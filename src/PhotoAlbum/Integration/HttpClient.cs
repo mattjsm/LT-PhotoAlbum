@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace PhotoAlbum.Infrastructure
+namespace PhotoAlbum.Integration
 {
     public class HttpClient : IHttpClient
     {

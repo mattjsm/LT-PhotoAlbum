@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace PhotoAlbum.Infrastructure
+namespace PhotoAlbum.Integration
 {
     public interface IHttpClient : IDisposable
     {

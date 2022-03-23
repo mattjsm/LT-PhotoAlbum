@@ -21,13 +21,12 @@ namespace PhotoAlbum
 
         public void ShowAlbums(IEnumerable<uint> albumNums)
         {
-            Console.WriteLine("Retrieving albums...");
-            Task<IEnumerable<Album>> albumTask = null;
-            albumTask = this.albumProvider.GetAlbums(albumNums.Distinct());
+            Console.WriteLine("Retrieving album(s)...");
+
+            var albumTask = this.albumProvider.GetAlbums(albumNums.Distinct());
             albumTask.Wait();
 
             var albums = albumTask.Result;
-
             if (albums == null)
             {
                 Console.WriteLine("An error occurred while retrieving photo album data.");

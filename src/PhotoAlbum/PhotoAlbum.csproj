@@ -17,10 +17,12 @@
     <None Remove="Model\" />
     <None Remove="Infrastructure\" />
     <None Remove="Autofac" />
+    <None Remove="Integration\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
     <Folder Include="Infrastructure\" />
+    <Folder Include="Integration\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.3.0" />

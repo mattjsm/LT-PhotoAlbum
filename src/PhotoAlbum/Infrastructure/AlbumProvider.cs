@@ -4,9 +4,8 @@ using System.Net.Http;
 using System.Web;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Net.Http.Json;
-using System.Text.Json;
 using PhotoAlbum.Model;
+using PhotoAlbum.Integration;
 
 namespace PhotoAlbum.Infrastructure
 {
