@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PhotoAlbum.Album
+namespace PhotoAlbum.Model
 {
     public class Album
     {

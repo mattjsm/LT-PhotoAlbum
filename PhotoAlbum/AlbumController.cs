@@ -3,20 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PhotoAlbum.Infrastructure;
+using PhotoAlbum.Model;
 
-namespace PhotoAlbum.Album
+namespace PhotoAlbum
 {
-    public class AlbumController
+    public class AlbumController : IDisposable
     {
+        private readonly IAlbumProvider albumProvider;
+
+        private bool disposed;
+
+        public AlbumController(IAlbumProvider prov)
+        {
+            this.albumProvider = prov;
+        }
+
         public void ShowAlbums(IEnumerable<uint> albumNums)
         {
             Console.WriteLine("Retrieving albums...");
             Task<IEnumerable<Album>> albumTask = null;
-            using (var prov = new AlbumProvider())
-            {
-                albumTask = prov.GetAlbums(albumNums.Distinct());
-                albumTask.Wait();
-            }
+            albumTask = this.albumProvider.GetAlbums(albumNums.Distinct());
+            albumTask.Wait();
 
             var albums = albumTask.Result;
 
@@ -52,6 +60,24 @@ namespace PhotoAlbum.Album
 
                 Console.WriteLine(sb.ToString());
             }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed) return;
+
+            if (disposing)
+            {
+                this.albumProvider.Dispose();
+            }
+
+            this.disposed = true;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace PhotoAlbum.Album
+﻿namespace PhotoAlbum.Model
 {
     public class AlbumImage
     {

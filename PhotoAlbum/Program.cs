@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using PhotoAlbum.Album;
+using Autofac;
+using PhotoAlbum.Infrastructure;
 
 namespace PhotoAlbum
 {
@@ -32,10 +33,25 @@ namespace PhotoAlbum
 
             if (hasInvalid) return;
 
-            new AlbumController().ShowAlbums(albumNumbers);
+            var container = SetupDI();
+            using(var cont = container.Resolve<AlbumController>())
+            {
+                cont.ShowAlbums(albumNumbers);
+            }
             Console.WriteLine();
             Console.WriteLine("Press any key to close...");
             Console.ReadLine();
+        }
+
+        private static IContainer SetupDI()
+        {
+            // There are ways to automate this using conventions, attributes, etc. Seemed like overkill for this.
+            // Leveraging it for sake of testing
+            var builder = new ContainerBuilder();
+            builder.RegisterType<HttpClient>().As<IHttpClient>();
+            builder.RegisterType<AlbumProvider>().As<IAlbumProvider>();
+            builder.RegisterType<AlbumController>().AsSelf();
+            return builder.Build();
         }
     }
 }

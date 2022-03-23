@@ -6,27 +6,23 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text.Json;
+using PhotoAlbum.Model;
 
-namespace PhotoAlbum.Album
+namespace PhotoAlbum.Infrastructure
 {
-    public class AlbumProvider : IDisposable
+    public class AlbumProvider : IAlbumProvider
     {
         private const string AlbumPath = "https://jsonplaceholder.typicode.com";
         private const string PhotosPath = "photos";
         private const string AlbumIdParam = "albumId";
 
-        private readonly HttpClient client;
-        private readonly JsonSerializerOptions jsonOptions;
+        private readonly IHttpClient client;
 
         private bool disposed;
 
-        public AlbumProvider()
+        public AlbumProvider(IHttpClient client)
         {
-            this.client = new HttpClient();
-            this.jsonOptions = new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true
-            };
+            this.client = client;
         }
 
         public async Task<IEnumerable<Album>> GetAlbums(IEnumerable<uint> albumNumbers)
@@ -34,9 +30,9 @@ namespace PhotoAlbum.Album
             try
             {
                 var tasks = new List<Task<Album>>(albumNumbers.Count());
-                foreach (var album in albumNumbers)
+                foreach (var num in albumNumbers)
                 {
-                    tasks.Add(GetAlbum(album));
+                    tasks.Add(GetAlbum(num));
                 }
 
                 await Task.WhenAll(tasks);
@@ -45,8 +41,7 @@ namespace PhotoAlbum.Album
                     return tasks.Select(t => t.Result).ToList();
                 }
             }
-            catch (HttpRequestException) {}
-
+            catch (HttpRequestException) { }
             return null;
         }
 
@@ -57,24 +52,24 @@ namespace PhotoAlbum.Album
             var query = HttpUtility.ParseQueryString(string.Empty);
             query[AlbumProvider.AlbumIdParam] = albumNum.ToString();
             builder.Query = query.ToString();
-            using (var result = await this.client.GetAsync(builder.ToString()))
+
+            try
             {
-                try
+                var httpResult = await this.client.GetAsync<List<AlbumImage>>(builder.ToString());
+                var album = new Album()
                 {
-                    var album = new Album()
-                    {
-                        Id = albumNum
-                    };
+                    Id = albumNum
+                };
 
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var parsed = await result.Content.ReadFromJsonAsync<List<AlbumImage>>(this.jsonOptions);
-                        album.Images = parsed.Any() ? parsed : null;
-                    }
-
-                    return album;
+                if (httpResult.IsSuccess)
+                {
+                    album.Images = httpResult.Content.Any() ? httpResult.Content : null;
                 }
-                catch(HttpRequestException) { }
+
+                return album;
+            }
+            catch (HttpRequestException)
+            {
                 return null;
             }
         }

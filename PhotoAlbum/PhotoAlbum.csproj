@@ -14,9 +14,15 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Newtonsoft.Json" />
-    <None Remove="Album\" />
+    <None Remove="Model\" />
+    <None Remove="Infrastructure\" />
+    <None Remove="Autofac" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Album\" />
+    <Folder Include="Model\" />
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.3.0" />
   </ItemGroup>
 </Project>
